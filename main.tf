@@ -62,7 +62,7 @@ module "alb" {
   
   vpc_id          = module.blog_vpc.vpc_id
   subnets         = module.blog_vpc.public_subnets
-  security_groups = [module.blog_sg.security_group_id]  # Ensure this is a list
+  security_groups = [module.blog_sg.security_group_id]
 
   target_groups = [
     {
@@ -101,6 +101,7 @@ module "alb" {
     Environment = "dev"
   }
 }
+
 
 module "blog_sg" {
   source  = "terraform-aws-modules/security-group/aws"
