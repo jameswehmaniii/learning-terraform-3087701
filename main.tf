@@ -64,14 +64,12 @@ module "alb" {
   subnets         = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
 
-  load_balancer_type = "application"
-
   target_groups = [
     {
-      name_prefix    = "blog-"
+      name_prefix      = "blog-"
       backend_protocol = "HTTP"
       backend_port     = 80
-      target_type     = "instance"
+      target_type      = "instance"
       health_check = {
         enabled             = true
         interval            = 30
@@ -82,14 +80,6 @@ module "alb" {
         timeout             = 5
         matcher             = "200"
       }
-    }
-  ]
-
-  targets = [
-    {
-      target_group_index = 0
-      target_id          = local.blog_instance_id
-      port               = 80
     }
   ]
 
@@ -105,6 +95,13 @@ module "alb" {
     Environment = "dev"
   }
 }
+
+resource "aws_lb_target_group_attachment" "blog_instance" {
+  target_group_arn = element([for tg in module.alb.target_group_arns : tg if tg.name == "blog-"], 0)
+  target_id        = local.blog_instance_id
+  port             = 80
+}
+
 
 
 module "blog_sg" {
