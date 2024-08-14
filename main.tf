@@ -64,12 +64,14 @@ module "alb" {
   subnets         = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
 
+  load_balancer_type = "application"
+
   target_groups = [
     {
       name_prefix    = "blog-"
-      protocol       = "HTTP"
-      port           = 80
-      target_type    = "instance"
+      backend_protocol = "HTTP"
+      backend_port     = 80
+      target_type     = "instance"
       health_check = {
         enabled             = true
         interval            = 30
@@ -80,12 +82,14 @@ module "alb" {
         timeout             = 5
         matcher             = "200"
       }
-      targets = {
-        my_target = {
-          target_id = local.blog_instance_id
-          port      = 80
-        }
-      }
+    }
+  ]
+
+  targets = [
+    {
+      target_group_index = 0
+      target_id          = local.blog_instance_id
+      port               = 80
     }
   ]
 
