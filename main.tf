@@ -50,6 +50,10 @@ output "blog_instance_id" {
   value = aws_instance.blog.id
 }
 
+locals {
+  blog_instance_id = aws_instance.blog.id
+}
+
 module "alb" {
   source = "terraform-aws-modules/alb/aws"
   version = "9.11.0"
