@@ -62,14 +62,24 @@ module "alb" {
   
   vpc_id          = module.blog_vpc.vpc_id
   subnets         = module.blog_vpc.public_subnets
-  security_groups = module.blog_sg.security_group_id
+  security_groups = [module.blog_sg.security_group_id]  # Ensure this is a list
 
   target_groups = [
     {
-      name_prefix      = "blog-"
-      protocol         = "HTTP"
-      port             = 80
-      target_type      = "instance"
+      name_prefix    = "blog-"
+      protocol       = "HTTP"
+      port           = 80
+      target_type    = "instance"
+      health_check = {
+        enabled             = true
+        interval            = 30
+        path                = "/"
+        protocol            = "HTTP"
+        healthy_threshold   = 5
+        unhealthy_threshold = 2
+        timeout             = 5
+        matcher             = "200"
+      }
       targets = {
         my_target = {
           target_id = local.blog_instance_id
