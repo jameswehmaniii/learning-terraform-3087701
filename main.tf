@@ -24,7 +24,7 @@ module "blog_vpc" {
   name = "dev"
   cidr = "10.0.0.0/16"
 
-  azs  = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  azs  = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
 
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
@@ -44,6 +44,10 @@ resource "aws_instance" "blog" {
   tags = {
     Name = "Hello World"
   }
+}
+
+output "blog_instance_id" {
+  value = aws_instance.blog.id
 }
 
 module "alb" {
